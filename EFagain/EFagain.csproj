@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Address.cs" />
     <Compile Include="BaseEntity.cs" />
+    <Compile Include="MethClass.cs" />
     <Compile Include="Migrations\201901102202400_FirstMigration.cs" />
     <Compile Include="Migrations\201901102202400_FirstMigration.Designer.cs">
       <DependentUpon>201901102202400_FirstMigration.cs</DependentUpon>
