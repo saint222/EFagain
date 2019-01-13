@@ -10,6 +10,6 @@ namespace EFagain
     {
         public string Name { get; set; }
         public virtual List <Product> Products { get; set; }
-        public Address Address { get; set; }
+        public virtual Address Address { get; set; }
     }
 }
