@@ -19,7 +19,8 @@ namespace EFagain
                 Console.WriteLine("2 - Show the DollShop.");
                 Console.WriteLine("3 - Add a new product.");
                 Console.WriteLine("4 - Add a new shop.");
-                Console.WriteLine("5 - Exit.");
+                Console.WriteLine("5 - Buy a product");
+                Console.WriteLine("6 - Exit.");
 
                 var answer = Console.ReadLine();
                 switch (answer)
@@ -37,6 +38,9 @@ namespace EFagain
                         AddShop();
                         break;
                     case "5":
+                        BuyProducts();
+                        break;
+                    case "6":
                         exit = true;
                         break;
                     default:
@@ -127,11 +131,65 @@ namespace EFagain
             Console.WriteLine("Enter a building number of a new shop address...");
             shop.Address.BuildingNumber = Int32.Parse(Console.ReadLine());
             using (var context = new ProductsContext())
-            {                
+            {
                 context.Shops.Add(shop);
                 context.SaveChanges();
             }
         }
+        static void BuyProducts()
+        {
+
+            using (var context = new ProductsContext())
+            {
+                Console.WriteLine("Choose a shop to buy product you want (press 1 or 2 for choosing) and press Enter...");
+                foreach (var shop in context.Shops)
+                {
+                    Console.WriteLine($"{shop.ID}-{shop.Name};");
+                }
+                var shopId = Int32.Parse(Console.ReadLine());
+                if (shopId != 0)
+                {
+                    var shop = context.Shops.Find(shopId);
+                    Console.WriteLine($"The products from the chosen shop and their quantity are:");
+                    foreach (var prod in shop.Products)
+                    {
+                        Console.WriteLine($"{prod.ID} - {prod.Name}-{prod.Quantity} pieces;");
+                    }
+                    Console.WriteLine("Press 1, 2, 3 ect., for choosing a product to buy and press Enter...");
+                    var productId = Int32.Parse(Console.ReadLine());
+
+                    if (productId != 0)
+                    {
+                        var product = context.Products.Find(productId);
+                        Console.WriteLine("How many pieces would you like to buy?");
+                        var choice = Int32.Parse(Console.ReadLine());
+                        if (product != null)
+                        {
+                            if (choice <= product.Quantity)
+                            {
+                                product.Quantity = product.Quantity - choice;
+                            }
+                            else
+                            {
+                                Console.WriteLine("There are no so many products at the stock, sorry...");
+
+                            }
+                        }
+                        context.SaveChanges();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Incorrect choice...");
+                    }
+                    }
+                    
+                }
+
+            }
+
+        }
+
 
     }
-}
+
+
