@@ -20,7 +20,8 @@ namespace EFagain
                 Console.WriteLine("3 - Add a new product.");
                 Console.WriteLine("4 - Add a new shop.");
                 Console.WriteLine("5 - Buy a product");
-                Console.WriteLine("6 - Exit.");
+                Console.WriteLine("6 - Change quantity of the products");
+                Console.WriteLine("7 - Exit.");
 
                 var answer = Console.ReadLine();
                 switch (answer)
@@ -41,6 +42,9 @@ namespace EFagain
                         BuyProducts();
                         break;
                     case "6":
+                        ChangeProductQuantity();
+                        break;
+                    case "7":
                         exit = true;
                         break;
                     default:
@@ -91,7 +95,7 @@ namespace EFagain
 
             using (var context = new ProductsContext())
             {
-                Console.WriteLine("Press 1 or 2 for choosing the shop for a new product...");
+                Console.WriteLine("Choose a shop for a new product...");
 
                 foreach (var shop in context.Shops)
                 {
@@ -138,10 +142,9 @@ namespace EFagain
         }
         static void BuyProducts()
         {
-
             using (var context = new ProductsContext())
             {
-                Console.WriteLine("Choose a shop to buy product you want (press 1 or 2 for choosing) and press Enter...");
+                Console.WriteLine("Choose a shop to buy product you want, press Enter and wait for some seconds......");
                 foreach (var shop in context.Shops)
                 {
                     Console.WriteLine($"{shop.ID}-{shop.Name};");
@@ -172,7 +175,6 @@ namespace EFagain
                             else
                             {
                                 Console.WriteLine("There are no so many products at the stock, sorry...");
-
                             }
                         }
                         context.SaveChanges();
@@ -181,15 +183,50 @@ namespace EFagain
                     {
                         Console.WriteLine("Incorrect choice...");
                     }
-                    }
-                    
                 }
-
             }
-
         }
-
-
+        static void ChangeProductQuantity()
+        {
+            using (var context = new ProductsContext())
+            {
+                Console.WriteLine("Choose a shop to change product quantity, press Enter and wait for some seconds...");
+                foreach (var shop in context.Shops)
+                {
+                    Console.WriteLine($"{shop.ID}-{shop.Name};");
+                }
+                var shopId = Int32.Parse(Console.ReadLine());
+                if (shopId != 0)
+                {
+                    var shop = context.Shops.Find(shopId);
+                    Console.WriteLine($"The products from the chosen shop and their quantity are:");
+                    foreach (var prod in shop.Products)
+                    {
+                        Console.WriteLine($"{prod.ID} - {prod.Name}-{prod.Quantity} pieces;");
+                    }
+                    Console.WriteLine("Make a choice of a product to change it's quantity and press Enter...");
+                    var productId = Int32.Parse(Console.ReadLine());
+                    if (productId != 0)
+                    {
+                        var product = context.Products.Find(productId);
+                        Console.WriteLine("How many pieces of the chosen product are expected to be?");
+                        var choice = Int32.Parse(Console.ReadLine());
+                        product.Quantity = choice;
+                        Console.WriteLine("Done...");
+                    }
+                    context.SaveChanges();
+                }
+                else
+                {
+                    Console.WriteLine("Incorrect choice...");
+                }
+            }
+        }
     }
+}
+
+    
+
+    
 
 
