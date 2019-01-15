@@ -144,13 +144,14 @@ namespace EFagain
         {
             using (var context = new ProductsContext())
             {
+
                 Console.WriteLine("Choose a shop to buy product you want, press Enter and wait for some seconds......");
                 foreach (var shop in context.Shops)
                 {
                     Console.WriteLine($"{shop.ID}-{shop.Name};");
                 }
                 var shopId = Int32.Parse(Console.ReadLine());
-                if (shopId != 0)
+                if (shopId !=0)
                 {
                     var shop = context.Shops.Find(shopId);
                     Console.WriteLine($"The products from the chosen shop and their quantity are:");
@@ -158,9 +159,8 @@ namespace EFagain
                     {
                         Console.WriteLine($"{prod.ID} - {prod.Name}-{prod.Quantity} pieces;");
                     }
-                    Console.WriteLine("Press 1, 2, 3 ect., for choosing a product to buy and press Enter...");
+                    Console.WriteLine("Choose a product to buy and press Enter...");
                     var productId = Int32.Parse(Console.ReadLine());
-
                     if (productId != 0)
                     {
                         var product = context.Products.Find(productId);
@@ -177,56 +177,72 @@ namespace EFagain
                                 Console.WriteLine("There are no so many products at the stock, sorry...");
                             }
                         }
+                        else
+                        {
+                            Console.WriteLine("Fuck you!)))");
+                        }
                         context.SaveChanges();
                     }
-                    else
-                    {
-                        Console.WriteLine("Incorrect choice...");
-                    }
                 }
+                else
+                {
+                    Console.WriteLine("Incorrect choice...");
+                }
+
+
             }
+
         }
         static void ChangeProductQuantity()
         {
             using (var context = new ProductsContext())
             {
-                Console.WriteLine("Choose a shop to change product quantity, press Enter and wait for some seconds...");
-                foreach (var shop in context.Shops)
+                try // ВСТАВИЛ ОБРАБОТКУ ИСКЛЮЧЕНИЙ ПРИ НЕКОРРЕКТНОМ ВВОДЕ ПОЛЬЗОВАТЕЛЯ на ВСЕХ этапах ввода
                 {
-                    Console.WriteLine($"{shop.ID}-{shop.Name};");
-                }
-                var shopId = Int32.Parse(Console.ReadLine());
-                if (shopId != 0)
-                {
-                    var shop = context.Shops.Find(shopId);
-                    Console.WriteLine($"The products from the chosen shop and their quantity are:");
-                    foreach (var prod in shop.Products)
+                    Console.WriteLine("Choose a shop to change product quantity, press Enter and wait for some seconds...");
+                    foreach (var shop in context.Shops)
                     {
-                        Console.WriteLine($"{prod.ID} - {prod.Name}-{prod.Quantity} pieces;");
+                        Console.WriteLine($"{shop.ID}-{shop.Name};");
                     }
-                    Console.WriteLine("Make a choice of a product to change it's quantity and press Enter...");
-                    var productId = Int32.Parse(Console.ReadLine());
-                    if (productId != 0)
+                    var shopId = Int32.Parse(Console.ReadLine());
+
+                    if (shopId != 0)
                     {
-                        var product = context.Products.Find(productId);
-                        Console.WriteLine("How many pieces of the chosen product are expected to be?");
-                        var choice = Int32.Parse(Console.ReadLine());
-                        product.Quantity = choice;
-                        Console.WriteLine("Done...");
+                        var shop = context.Shops.Find(shopId);
+                        Console.WriteLine($"The products from the chosen shop and their quantity are:");
+                        foreach (var prod in shop.Products)
+                        {
+                            Console.WriteLine($"{prod.ID} - {prod.Name}-{prod.Quantity} pieces;");
+                        }
+                        Console.WriteLine("Make a choice of a product to change it's quantity and press Enter...");
+                        var productId = Int32.Parse(Console.ReadLine());
+                        if (productId != 0)
+                        {
+                            var product = context.Products.Find(productId);
+                            Console.WriteLine("How many pieces of the chosen product are expected to be?");
+                            var choice = Int32.Parse(Console.ReadLine());
+                            product.Quantity = choice;
+                            Console.WriteLine("Done...");
+                        }
+                        context.SaveChanges();
                     }
-                    context.SaveChanges();
+                    //else
+                    //{
+                    //    Console.WriteLine("Incorrect choice...");
+                    //}
                 }
-                else
+                catch
                 {
-                    Console.WriteLine("Incorrect choice...");
+                    Console.WriteLine("Incorrect input, try again, please!"); // вылазит при некорректном вводе, после чего выкидывает в основное меню!  
                 }
             }
         }
     }
 }
 
-    
 
-    
+
+
+
 
 
