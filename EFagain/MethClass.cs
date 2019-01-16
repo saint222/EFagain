@@ -151,7 +151,7 @@ namespace EFagain
                     Console.WriteLine($"{shop.ID}-{shop.Name};");
                 }
                 var shopId = Int32.Parse(Console.ReadLine());
-                if (shopId !=0)
+                if (shopId != 0)
                 {
                     var shop = context.Shops.Find(shopId);
                     Console.WriteLine($"The products from the chosen shop and their quantity are:");
@@ -197,44 +197,73 @@ namespace EFagain
         {
             using (var context = new ProductsContext())
             {
-                try // ВСТАВИЛ ОБРАБОТКУ ИСКЛЮЧЕНИЙ ПРИ НЕКОРРЕКТНОМ ВВОДЕ ПОЛЬЗОВАТЕЛЯ на ВСЕХ этапах ввода
+                var correct = false;
+                while (!correct)
                 {
                     Console.WriteLine("Choose a shop to change product quantity, press Enter and wait for some seconds...");
                     foreach (var shop in context.Shops)
                     {
                         Console.WriteLine($"{shop.ID}-{shop.Name};");
                     }
-                    var shopId = Int32.Parse(Console.ReadLine());
-
+                    var shopId = 0;
+                    var result = Console.ReadLine();
+                    var unnesValue = int.TryParse(result, out shopId);
                     if (shopId != 0)
                     {
                         var shop = context.Shops.Find(shopId);
-                        Console.WriteLine($"The products from the chosen shop and their quantity are:");
-                        foreach (var prod in shop.Products)
+                        if (shop != null)
                         {
-                            Console.WriteLine($"{prod.ID} - {prod.Name}-{prod.Quantity} pieces;");
+                            Console.WriteLine($"The products from the chosen shop and their quantity are:");
+                            foreach (var prod in shop.Products)
+                            {
+                                Console.WriteLine($"{prod.ID} - {prod.Name}-{prod.Quantity} pieces;");
+                            }
+                            correct = true;
                         }
-                        Console.WriteLine("Make a choice of a product to change it's quantity and press Enter...");
-                        var productId = Int32.Parse(Console.ReadLine());
-                        if (productId != 0)
+                        else
                         {
-                            var product = context.Products.Find(productId);
+                            Console.WriteLine("Fuck...there is no shop with such Id, try again!");
+                            correct = false;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Incorrect input of the shop, try again!");                        
+                        correct = false;
+                    }
+                }
+                var correct_2 = false;
+                while (!correct_2)
+                {
+                    Console.WriteLine("Make a choice of a product to change it's quantity and press Enter...");
+                    var productId = 0;
+                    var result_1 = Console.ReadLine();
+                    var unnesValue_2 = int.TryParse(result_1, out productId);
+                    if (productId != 0)
+                    {                        
+                        var product = context.Products.Find(productId);
+                        if (product != null)
+                        {
                             Console.WriteLine("How many pieces of the chosen product are expected to be?");
                             var choice = Int32.Parse(Console.ReadLine());
                             product.Quantity = choice;
-                            Console.WriteLine("Done...");
+                            Console.WriteLine("Done...");                            
+                            context.SaveChanges();
+                            correct_2 = true;
                         }
-                        context.SaveChanges();
+                        else
+                        {
+                            Console.WriteLine("Fuck...there is no shop with such Id, try again!");
+                            correct_2 = false;
+                        }
                     }
-                    //else
-                    //{
-                    //    Console.WriteLine("Incorrect choice...");
-                    //}
+                    else
+                    {
+                        Console.WriteLine("Incorrect input, try again, please!");
+                        correct_2 = false;
+                    }
                 }
-                catch
-                {
-                    Console.WriteLine("Incorrect input, try again, please!"); // вылазит при некорректном вводе, после чего выкидывает в основное меню!  
-                }
+
             }
         }
     }
