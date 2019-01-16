@@ -21,8 +21,9 @@ namespace EFagain
                 Console.WriteLine("3 - Add a new product.");
                 Console.WriteLine("4 - Add a new shop.");
                 Console.WriteLine("5 - Buy a product");
-                Console.WriteLine("6 - Change quantity of the products");
-                Console.WriteLine("7 - Exit.");
+                Console.WriteLine("6 - Change a shop name");    
+                Console.WriteLine("7 - Change quantity of the products");
+                Console.WriteLine("8 - Exit.");
 
                 var answer = Console.ReadLine();
                 switch (answer)
@@ -43,9 +44,12 @@ namespace EFagain
                         BuyProducts();
                         break;
                     case "6":
-                        ChangeProductQuantity();
+                        ChangeShopName();
                         break;
                     case "7":
+                        ChangeProductQuantity();
+                        break;
+                    case "8":
                         exit = true;
                         break;
                     default:
@@ -86,7 +90,7 @@ namespace EFagain
             }
 
         }
-        static void AddProduct()
+        public void AddProduct()
         {
             var product = new Product();
             Console.WriteLine("Enter a name of a new product...");
@@ -124,7 +128,7 @@ namespace EFagain
                             else
                             {
                                 Console.WriteLine("There is no shop with such Id, try again!");
-                            }                            
+                            }
                         }
                         else
                         {
@@ -140,7 +144,7 @@ namespace EFagain
                 }
             }
         }
-        static void AddShop()
+        public void AddShop()
         {
             var shop = new Shop();
             shop.Address = new Address();
@@ -179,7 +183,7 @@ namespace EFagain
         }
 
 
-        static void BuyProducts()
+        public void BuyProducts()
         {
             using (var context = new ProductsContext())
             {
@@ -272,7 +276,7 @@ namespace EFagain
         }
 
 
-        public static void ChangeProductQuantity()
+        public void ChangeProductQuantity()
         {
             using (var context = new ProductsContext())
             {
@@ -344,6 +348,56 @@ namespace EFagain
                 }
             }
         }
+
+        public void ChangeShopName()
+        {
+            var correct = false;
+            while (!correct)
+            {
+                using (var context = new ProductsContext())
+                {
+                    Console.WriteLine("Choose a shop to shange it' name and press Enter.");
+                    foreach (var shopVar in context.Shops)
+                    {
+                        Console.WriteLine($"{shopVar.ID} - {shopVar.Name};");
+                    }
+                }
+
+                using (var context = new ProductsContext())
+                {
+                    var shopId = 0;
+                    var result = Console.ReadLine();
+                    var unnessValue = int.TryParse(result, out shopId);
+                    if (shopId != 0)
+                    {
+                        var shop = context.Shops.Find(shopId);
+                        if (shop != null)
+                        {
+                            Console.WriteLine("What a new name for the chosen shop?");
+                            var newName = Console.ReadLine();                            
+                            shop.Name = newName;
+                            context.SaveChanges();
+                            Console.WriteLine("Done!");
+                            correct = true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("There is no shop with such Id, try again!");
+                            correct = false;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Incorrect input");
+                        correct = false;
+                    }
+                }
+
+            }         
+
+
+        }
+
     }
 }
 
